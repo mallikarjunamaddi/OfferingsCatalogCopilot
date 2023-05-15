@@ -1,0 +1,135 @@
+query {
+        allServices(
+            
+            pager: {size:2,skip:0}
+            searchByIdOrCodeOrName:"##ServiceGPTQuery##"
+            filter : {sellableState : {eq: "Active"},isTiered:false,adminAttributes:{isEnabled:true},isPremier:true}
+            ) {
+            nodes {
+              itemCode
+              itemId
+              name
+              groupDuration{
+                minDurationTime
+                maxDurationTime
+                durationUnitOfMeasureName
+              }
+              description
+              isGroup
+              auditAttributes {
+                createdOn
+                isDeleted
+                lastModifiedOn
+                
+              }
+              serviceFamily{
+                value
+              }
+              taxonomies{
+                primaryTechnologies{
+                  value
+                }
+              }
+              serviceType{
+                value
+              }
+              deliveryAttributes{
+                targetLevel{value}
+                duration{
+                  durationTime
+                  durationUOM{
+                    value
+                  }
+                }
+               
+                deliveryMode{
+                  isOnsite
+                  isRemote
+                }
+              }
+              replacedByItemName
+              documentList{
+                filePath
+                fileName
+                uploadedFileType
+                documentType{
+                  name
+                }
+                documentLanguage{
+                  code
+                  name
+                }
+              }
+              replacedByItemId
+              geographyInfo(filter: { geographyCode: { eq: "6IND" },mSGeoCodes:{alpha3:{eq: "IND"}},lifecycle:{sellableState:{eq:"Active"},practiceType:{code:{eq: 3}}} } ) {
+                geography {
+        details {
+          geographyCode
+          geographyName
+          geographyId
+          parentGeographyCode
+        }
+        mSGeoCodes {
+          alpha2
+          alpha3
+          numeric
+        }
+      }
+      isRetiring
+      groupPrice{
+        minPrice{
+        rate
+        rateUSD
+        currency{
+          code
+        }
+        practiceType{
+          id
+          code
+          
+        }
+        }
+        maxPrice{
+          rate
+          rateUSD
+          practiceType{
+            id
+            code
+            
+          }
+        }
+      }
+      lifecycle{
+        sellableDates{
+          endDate
+          startDate
+        }
+        practiceType{
+          id
+          code
+          
+        }
+      }
+      currentPrice {
+      rate
+      rateUSD
+      currency {
+        code
+        name
+      }
+      practiceType{
+        id
+        code
+      }
+      }
+              }
+            }
+            pageInfo {
+              requestedPageSize
+              requestedSkip
+              totalCount
+              
+            }
+          }
+        }
+      
