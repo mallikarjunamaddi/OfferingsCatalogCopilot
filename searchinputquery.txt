@@ -7,7 +7,6 @@ query {
             ) {
             nodes {
               itemCode
-              itemId
               name
               groupDuration{
                 minDurationTime
@@ -16,12 +15,6 @@ query {
               }
               description
               isGroup
-              auditAttributes {
-                createdOn
-                isDeleted
-                lastModifiedOn
-                
-              }
               serviceFamily{
                 value
               }
@@ -49,7 +42,6 @@ query {
               }
               replacedByItemName
               documentList{
-                filePath
                 fileName
                 uploadedFileType
                 documentType{
@@ -66,7 +58,6 @@ query {
         details {
           geographyCode
           geographyName
-          geographyId
           parentGeographyCode
         }
         mSGeoCodes {
@@ -84,7 +75,6 @@ query {
           code
         }
         practiceType{
-          id
           code
           
         }
@@ -93,7 +83,6 @@ query {
           rate
           rateUSD
           practiceType{
-            id
             code
             
           }
@@ -105,7 +94,6 @@ query {
           startDate
         }
         practiceType{
-          id
           code
           
         }
@@ -118,15 +106,12 @@ query {
         name
       }
       practiceType{
-        id
         code
       }
       }
               }
             }
             pageInfo {
-              requestedPageSize
-              requestedSkip
               totalCount
               
             }
