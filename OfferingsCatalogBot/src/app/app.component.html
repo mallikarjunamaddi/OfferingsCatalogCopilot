@@ -33,7 +33,7 @@
 <!-- Chat Input -->
 <div horizontal class="questionInputContainer">
   <span>
-    <input type="text" [(ngModel)]="query" class="questionInputTextArea" placeholder="Ask a question"
+    <input type="text" [(ngModel)]="query" class="questionInputTextArea" placeholder="Ask me a question..."
       (keyup.enter)="getQueryResponse()" />
   </span>
   <span (click)="getQueryResponse()" class="send-btn-container" [ngClass]="{'send-btn-disable': !query}">
