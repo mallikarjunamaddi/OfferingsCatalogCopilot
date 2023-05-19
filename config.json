@@ -1,4 +1,10 @@
 {
+    "apiType": "azure",
+    "azureOpenAI": {
+        "apiBase": "https://openaipanthers.openai.azure.com/",
+        "apiVersion": "2023-03-15-preview",
+        "deploymentName": "ChatGPT"
+    },
     "openaiAPIKey": "",
     "authorizationToken": ""
 }
