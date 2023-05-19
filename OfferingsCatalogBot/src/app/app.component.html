@@ -32,8 +32,11 @@
 
 <!-- Chat Input -->
 <div horizontal class="questionInputContainer">
-  <input type="text" [(ngModel)]="query" class="questionInputTextArea" placeholder="Ask a question" (keyup.enter)="getQueryResponse()" />
-  <div class="questionInputButtonsContainer">
-    <button class="questionInputSendButton" [disabled]='!query' (click)="getQueryResponse()">Send</button>
-  </div>
+  <span>
+    <input type="text" [(ngModel)]="query" class="questionInputTextArea" placeholder="Ask a question"
+      (keyup.enter)="getQueryResponse()" />
+  </span>
+  <span (click)="getQueryResponse()" class="send-btn-container" [ngClass]="{'send-btn-disable': !query}">
+    <img src="../assets/SendMsgLogo.svg" width="30" height="30" alt="Send" class="send-btn">
+  </span>
 </div>

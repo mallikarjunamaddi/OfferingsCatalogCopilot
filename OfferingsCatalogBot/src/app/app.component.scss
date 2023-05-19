@@ -1,3 +1,11 @@
+.chat-container {
+  height: 78%;
+  overflow-y: auto;
+  position: absolute;
+  left: 20%;
+  right: 20%
+}
+
 .container {
   margin-bottom: 10px;
   max-width: 80%;
@@ -21,7 +29,6 @@
   margin-bottom: 5px;
 }
 
-
 .answer-message {
   padding: 20px;
   background: #e8ebfa;
@@ -34,42 +41,45 @@
 .questionInputContainer {
   border-radius: 8px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
-  height: 90px;
+  height: 60px;
   width: 50%;
   padding: 15px;
   background: white;
   position: fixed;
-  bottom: 0px;
+  bottom: 15px;
   left: 25%;
 }
 
 .questionInputTextArea {
-  width: 100%;
+  width: 94%;
   line-height: 40px;
 }
 
-.questionInputButtonsContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+.send-btn-container {
+  margin-left: 1%;
+  position: relative;
 }
 
-.questionInputSendButton {
-  cursor: pointer;
-  background-color: #1976d2;
-  color: white;
+.send-btn {
+  position: relative;
+  top: 8%;
 }
 
-.questionInputSendButtonDisabled {
+.send-btn-disable {
   opacity: 0.4;
 }
 
-.chat-container {
-  height: 75%;
-  overflow-y: auto;
-  position: absolute;
-  left: 20%;
-  right: 20%
+.chat-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  height: 20px;
 }
 
 .header-logo {
