@@ -1,5 +1,6 @@
 import json
 import requests
+import openai
 from langchain.llms import OpenAI
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,18 +18,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+with open('config.json') as f:
+    config = json.load(f)
+    openai_api_key = config.get('openaiAPIKey')
+    authorizationToken = config.get('authorizationToken')
+    apiType = config.get('apiType')
+
+if(apiType == "azure"):
+    openai.api_type = apiType
+    openai.api_base = config['azureOpenAI']['apiBase']
+    openai.api_version = config['azureOpenAI']['apiVersion']
+
 @app.post("/")
 async def getGPTResponse(request: Request):
-    with open('config.json') as f:
-        config = json.load(f)
-        openai_api_key = config.get('openaiAPIKey')
-        authorizationToken = config.get('authorizationToken')
-
     headers = request.headers
     body = await request.json()
     chatHistory = body["chatHistory"]
     question = headers["gptInitialQuery"]
-
 
     try:
         chatHistoryString = getChatHistoryString(chatHistory)
@@ -36,9 +42,9 @@ async def getGPTResponse(request: Request):
 
         searchQueryPrompt = '''Below is the history of conversation so far, and a new question asked by the user that needs to be answered by searching in a Catalog Knowledge Base.
         Generate a service name based on the conversation and the new question.
-        If you can't generate say "I don't understand". Service Name is the Search string.
+        If you can't generate say "I don't understand". Service Name is the Search String.
         Search String should have only service name and no other text. 
-        Give priority to the service name in the recent chat and question.
+        Give priority to the service name in the recent conversation, question whichever is latest.
         '''
 
         searchStringPromptTemplate = '''{searchQueryPrompt}
@@ -52,11 +58,22 @@ async def getGPTResponse(request: Request):
         Search String: 
         '''
 
-        llm = OpenAI(model_name='gpt-3.5-turbo',
-                temperature=0,
-                openai_api_key=openai_api_key,
-                max_tokens=1024,
-                top_p=0.3)
+        if(apiType == "azure"):
+            print("======================================Using Azure OpenAI===================================")
+            llm = OpenAI(model_name = 'gpt-3.5-turbo',
+                    engine=config['azureOpenAI']['deploymentName'],
+                    temperature=0,
+                    openai_api_key=openai_api_key,
+                    max_tokens=800,
+                    top_p=0.1)
+        else:
+            print("=======================================Using OpenAI==========================================")
+            llm = OpenAI(model_name = 'gpt-3.5-turbo',
+                    temperature=0,
+                    openai_api_key=openai_api_key,
+                    max_tokens=800,
+                    top_p=0.1)
+
         
         searchQueryPrompt = searchStringPromptTemplate.format(searchQueryPrompt = searchQueryPrompt, chatHistory=chatHistoryString, question=question) 
         
@@ -169,6 +186,3 @@ def getSearchResults(question, authorizationToken):
         return "Error in fetching data from the catalog, check the authorization token"
 
     return response
-
-
-#cmd to start -  python -m uvicorn catalogBotApi:app --reload
