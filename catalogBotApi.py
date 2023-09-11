@@ -21,13 +21,16 @@ app.add_middleware(
 with open('config.json') as f:
     config = json.load(f)
     openai_api_key = config.get('openaiAPIKey')
-    authorizationToken = config.get('authorizationToken')
+    authorizationToken = config.get('gqlAuthorizationToken')
     apiType = config.get('apiType')
+    searchApiUrl = config.get('searchApiUrl')
+    partnerAppKey = config.get('gqlPartnerAppKey')
 
 if(apiType == "azure"):
     openai.api_type = apiType
     openai.api_base = config['azureOpenAI']['apiBase']
     openai.api_version = config['azureOpenAI']['apiVersion']
+    openai.api_key = openai_api_key
 
 @app.post("/")
 async def getGPTResponse(request: Request):
@@ -79,7 +82,7 @@ async def getGPTResponse(request: Request):
         
         print("================================== Search Query Prompt ================================================")
         print(searchQueryPrompt)
-        print("================================== End Of Search Query Prompt +========================================")    
+        print("================================== End Of Search Query Prompt =========================================")    
         
 
         searchQuery = llm(searchQueryPrompt)
@@ -163,9 +166,6 @@ def getChatHistoryString(chatHistory):
 
 
 def getSearchResults(question, authorizationToken):
-    url = 'https://phxgraph-dev.azurewebsites.net/graphql'
-    partnerAppKey = "OfferingsManagement"
-
     searchQuery = open('searchinputquery.txt', 'r').read()
     searchQuery = searchQuery.replace('##ServiceGPTQuery##', question)
 
@@ -179,7 +179,7 @@ def getSearchResults(question, authorizationToken):
         "query": searchQuery
     }
 
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(searchApiUrl, headers=headers, json=data)
 
     if(response.status_code != 200):
         print("status code:" + str(response.status_code))
