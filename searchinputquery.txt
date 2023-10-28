@@ -11,7 +11,8 @@ query {
               groupDuration{
                 minDurationTime
                 maxDurationTime
-                durationUnitOfMeasureName
+                maxDurationUnitOfMeasureName
+                minDurationUnitOfMeasureName
               }
               description
               isGroup
@@ -52,6 +53,7 @@ query {
                   name
                 }
               }
+              contents
               replacedByItemId
               geographyInfo(filter: { geographyCode: { eq: "6IND" },mSGeoCodes:{alpha3:{eq: "IND"}},lifecycle:{sellableState:{eq:"Active"},practiceType:{code:{eq: 3}}} } ) {
                 geography {
