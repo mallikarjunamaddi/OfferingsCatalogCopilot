@@ -1,7 +1,7 @@
 query {
         allServices(
             
-            pager: {size:2,skip:0}
+            pager: {size:4,skip:0}
             searchByIdOrCodeOrName:"##ServiceGPTQuery##"
             filter : {sellableState : {eq: "Active"},isTiered:false,adminAttributes:{isEnabled:true},isPremier:true}
             ) {

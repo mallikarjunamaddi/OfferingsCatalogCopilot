@@ -110,7 +110,7 @@ async def getGPTResponse(request: Request):
             if(len(searchJsonResponse) == 0):
                 return "No relevant services found"
             
-            dataContext = json.dumps(searchJsonResponse[0]) # Top 1 result
+            dataContext = json.dumps(searchJsonResponse) # Top 4 result
 
             print("================================== Data Context ================================================")
             print(dataContext)
@@ -179,7 +179,7 @@ def getSearchResults(question, authorizationToken):
         "query": searchQuery
     }
 
-    response = requests.post(searchApiUrl, headers=headers, json=data)
+    response = requests.post(searchApiUrl, headers=headers, json=data, verify=False)
 
     if(response.status_code != 200):
         print("status code:" + str(response.status_code))
