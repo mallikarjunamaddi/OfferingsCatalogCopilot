@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Conversation } from 'src/models/Conversation';
+import { environment } from 'environments/env.dev';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatServiceService {
-  apiURL: string;
+  apiBaseURL: string;
 
   constructor(private httpClient: HttpClient) {
-    this.apiURL = 'http://localhost:8000/'
+    this.apiBaseURL =  environment.apiBaseURL;
   }
 
   public getQueryResponse(query: string, chatHistory: Conversation[]): Observable<string> {
@@ -21,6 +22,6 @@ export class ChatServiceService {
     const body = {
       "chatHistory": chatHistory
     }
-    return this.httpClient.post<string>(this.apiURL, body, { headers: headers });
+    return this.httpClient.post<string>(this.apiBaseURL, body, { headers: headers });
   }
 }
