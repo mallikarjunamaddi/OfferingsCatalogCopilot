@@ -2,21 +2,12 @@ import json
 import requests
 import openai
 from langchain.llms import OpenAI
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from azure.identity import ManagedIdentityCredential
 
-app = FastAPI()
-origins = [
-    "http://localhost:4200"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = Flask(__name__)
+CORS(app)
 
 with open('config.json') as f:
     config = json.load(f)
@@ -32,10 +23,14 @@ if(apiType == "azure"):
     openai.api_version = config['azureOpenAI']['apiVersion']
     openai.api_key = openai_api_key
 
-@app.post("/")
-async def getGPTResponse(request: Request):
+@app.route('/hello', methods=['GET'])
+def hello():
+   return jsonify("Hello World from API")
+
+@app.route('/', methods=['POST'])
+def getGPTResponse():    
     headers = request.headers
-    body = await request.json()
+    body = json.loads(request.data)
     chatHistory = body["chatHistory"]
     question = headers["gptInitialQuery"]
 
@@ -95,7 +90,9 @@ async def getGPTResponse(request: Request):
         if(searchQuery):
             searchQuery = searchQuery.replace("Search String:", "").replace("\n", "").replace('"', '').strip()
             if("I don't understand" in searchQuery):
-                return searchQuery
+                return  jsonify(searchQuery)
+            
+            # return jsonify(searchQuery)
 
             searchResponse = getSearchResults(searchQuery, authorizationToken)
 
@@ -104,7 +101,7 @@ async def getGPTResponse(request: Request):
             print("================================== End Of Search Response =========================================")
 
             if(type(searchResponse) == str):
-                return searchResponse
+                return jsonify(searchResponse)
         
             searchJsonResponse = searchResponse.json()['data']['allServices']['nodes']
             if(len(searchJsonResponse) == 0):
@@ -145,13 +142,12 @@ async def getGPTResponse(request: Request):
             print(botResponse)
             print("================================== End Of GPT Response =================================================")
 
-            return botResponse
+            return jsonify(botResponse)
 
     except Exception as e:
         print(e)
-        response = e
-
-        return response
+        error_message = f'Error: {str(e)}'
+        return jsonify(error_message)
 
 
 def getChatHistoryString(chatHistory):
@@ -179,6 +175,10 @@ def getSearchResults(question, authorizationToken):
         "query": searchQuery
     }
 
+    # To Do: Get the authorization token to access UAT GraphQL API leveraging Managed Identity
+    # credential = ManagedIdentityCredential()
+    # access_token = credential.get_token("https://phxgraph-uat.azurewebsites.net").token
+
     response = requests.post(searchApiUrl, headers=headers, json=data, verify=False)
 
     if(response.status_code != 200):
@@ -186,3 +186,7 @@ def getSearchResults(question, authorizationToken):
         return "Error in fetching data from the catalog, check the authorization token"
 
     return response
+
+
+if __name__ == '__main__':
+    app.run()
